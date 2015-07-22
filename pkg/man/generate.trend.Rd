@@ -7,13 +7,14 @@ Generates a set of mean values.
 This function is used to generate mean value scenarios for use in \code{\link{power.trend}}.
 }
 
-\usage{ generate.trend(nyears, mu1=0, k, type = c("linear", "incident", "step", "updown"),
-        changeyear, symmetric=F) }
+\usage{ generate.trend(nyears, mu1=0, change, change.type="A", type = c("linear", "incident",
+        "step", "updown"), changeyear, symmetric=F) }
 
 \arguments{
   \item{nyears}{Defines the number of time points for X axis}
   \item{mu1}{The mean Y value for the first time point}
-  \item{k}{Difference between \code{mu1} and largest (or smallest) \code{mu_i}. Can be negative for a decreasing trend.}
+  \item{change}{Difference between \code{mu1} and largest (or smallest) \code{mu_i}. Can be negative for a decreasing trend.}
+  \item{change.type}{Whether the parameter \code{change} represents an additive ("A") or percentage ("M") change.}
   \item{type}{Type of trend to assess the power against. Can be any of \code{"linear"}, \code{"incident"},
               \code{"step"} or \code{"updown"}.
               See \code{examples} below for more details.}
@@ -49,12 +50,12 @@ David Maxwell: David.Maxwell@cefas.co.uk
 \code{\link{power.trend}}, \code{\link{addnoise}}
 }
 \examples{
-lin0 = generate.trend(nyears=10, k=0, type="linear")
-lin5 = generate.trend(nyears=10, k=5, type="linear")
-inc5 = generate.trend(nyears=10, k=5, type="incident", changeyear=6)
-step5 = generate.trend(nyears=10, k=5, type="step", changeyear=6)
-updeven = generate.trend(nyears=10, k=5, type="updown", changeyear=5, symmetric=TRUE)
-updodd = generate.trend(nyears=9, k=5, type="updown", changeyear=3)
+lin0 = generate.trend(nyears=10, change=0, type="linear")
+lin5 = generate.trend(nyears=10, change=5, type="linear")
+inc5 = generate.trend(nyears=10, change=5, type="incident", changeyear=6)
+step5 = generate.trend(nyears=10, change=5, type="step", changeyear=6)
+updeven = generate.trend(nyears=10, change=5, type="updown", changeyear=5, symmetric=TRUE)
+updodd = generate.trend(nyears=9, change=5, type="updown", changeyear=3)
 
 par(mfrow=c(2,3))
 plot(lin0$i, lin0$mu, type="o", pch=16, xlab='Time', ylab='Y')

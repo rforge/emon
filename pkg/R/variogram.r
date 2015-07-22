@@ -1,3 +1,4 @@
+
 svariog<-function(x, y, z, u) {
 #********************************************************************
 # Calculates the empirical semi-variogram based on smoothing with

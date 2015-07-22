@@ -27,8 +27,8 @@ spatial sampling designs (\code{\link{detect}}).
   \tabular{ll}{
     Package: \tab emon\cr
     Type: \tab Package\cr
-    Version: \tab 0.6\cr
-    Date: \tab 2015-03-31\cr
+    Version: \tab 0.4\cr
+    Date: \tab 2014-11-13\cr
     License: \tab GPL-3\cr
   }
 The six tools in this package are as follows:

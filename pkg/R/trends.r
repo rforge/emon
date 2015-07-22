@@ -1,4 +1,4 @@
-generate.trend = function(nyears, mu1=0, k, type = c("linear", "incident", "step", "updown"), changeyear, symmetric=F){
+generate.trend = function(nyears, mu1=0, change, change.type="A", type = c("linear", "incident", "step", "updown"), changeyear, symmetric=F){
   # Generate mean values for different scenarios of change
   # Based on
   # Fryer & Nicholson 1993 IJMS 50:161-168 which had linear change and incident
@@ -14,7 +14,6 @@ generate.trend = function(nyears, mu1=0, k, type = c("linear", "incident", "step
   # for updown: gradient is calculated for upwards change and -1 * same gradient applied for downwards slope
   # special case if symmetric=T and even number of years and changeyear is year T/2
   # then two years in the middle of the series (T/2 and T/2 + 1) both have mu = mu1+k
-  
 
   type <- match.arg(type) # allows abbreviations for type
    
@@ -23,32 +22,39 @@ generate.trend = function(nyears, mu1=0, k, type = c("linear", "incident", "step
   if(type!="linear"){
     if(changeyear <1 | changeyear > nyears) stop("Need changeyear to be in range 1 to nyears")
   }
+
+  allowedchange.type = c("M", "A")
+  
+  if( !(change.type %in% allowedchange.type) )
+    stop(paste("change.type must be one of ", allowedchange.type))
+
+  if (change.type=="M") change = mu1 + mu1*change/100
   
   i = 1:nyears
   
   # using if statements for type, alternatively could use switch but care needed with factors for that
   if(type=="linear"){
-    b = k/(nyears-1)
+    b = change/(nyears-1)
     mu = mu1 + (i-1) * b
   }
 
   if(type=="incident"){
     mu = rep(mu1, times=nyears)
-    mu[changeyear] = mu1 + k
+    mu[changeyear] = mu1 + change
   }
   
   if(type=="step"){
     mu = rep(mu1, times=nyears)
-    mu[changeyear:nyears] = mu1 + k
+    mu[changeyear:nyears] = mu1 + change
   }
   
   if(type=="updown"){
     if(changeyear == 1 | changeyear == nyears) stop('changeyear cannot be first or last year in series for type="updown". This a linear trend so can use type="linear".')
         
-    b = k/(changeyear-1) # slope
+    b = change/(changeyear-1) # slope
     
     if (!(nyears %% 2 == 0 & abs(changeyear - nyears/2)<1e15 & symmetric==T)){    
-      mu = mu1 + k - abs(i-changeyear) * b
+      mu = mu1 + change - abs(i-changeyear) * b
     } else {
     # special case changeyear in middle of even number of years so trend is symmetrical
     mu = mu1 + (i-1) * b
@@ -61,7 +67,8 @@ generate.trend = function(nyears, mu1=0, k, type = c("linear", "incident", "step
 
 
 
-addnoise = function(meanvalues, reps, distribution="Normal", sd=NA, nbsize=NA, randeffect=NA, randeffect.sd=NA){
+addnoise = function(meanvalues, reps, distribution="Normal", sd=NA, nbsize=NA,
+     randeffect=NA, randeffect.sd=NA){
 #***************************************************************************
 # Use the generated means as input to a function that adds random variation
 # This function is called from within power.trend
@@ -76,7 +83,7 @@ meanvalues.rep = rep(meanvalues, rep(reps, nyears))
   if(distribution == "Poisson")  dat = rpois(n=nobs, lambda = meanvalues.rep)  
   if(distribution == "Negbin")  dat = rnbinom(n=nobs, mu = meanvalues.rep, size = nbsize)
   
-  if (randeffect==T) dat = dat + rep(rnorm(n=nyears, mean=0, sd=randeffect.sd), rep(reps, nyears))
+#  if (randeffect==T) dat = dat + rep(rnorm(n=nyears, mean=0, sd=randeffect.sd), rep(reps, nyears))
   dat
 }
 
@@ -120,6 +127,9 @@ power.trend = function(xvalues, reps=1,  meanvalues, distribution="Normal", sd=N
 
   allowedmethod = c("linear regression", "mk1", "mk2", "gam")
   
+  if (method=="mk1" & reps > 1.1)
+    stop("Mann-Kendall mk1 works only when reps=1")
+
   if( !(method %in% allowedmethod) )
     stop(paste("distribution must be one of", allowedmethod))
 
@@ -151,7 +161,7 @@ xvalues = rep(xvalues, rep(reps,length.xvalues))
     pvalues[j] = coef(smry)[2,"Pr(>|t|)"]
     }
   }
-
+  
   if(method == "mk1"){
     for(j in 1:nsims){
       y = addnoise(meanvalues, reps, distribution, sd, nbsize, randeffect, randeffect.sd)
@@ -253,4 +263,6 @@ pvalue = (bigger+1)/(nsims.mk+1)
 
 list(pvalue=pvalue, mann=observed)
 }
+
+
 

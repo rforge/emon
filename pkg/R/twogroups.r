@@ -109,13 +109,13 @@ if (change.type=="A") m2 = m1 + change
 s1 = pars1[2]
 s2 = pars2[1]
 count = 0
-for (j in 1:nreps) {
+for (j in 1:nsims) {
 y1 = rnorm(n1, m1, s1)
 y2 = rnorm(n2, m2, s2)
 if (test=='P') p = t.test(y1, y2, var.equal=varequal, alternative=alt)$p.val
 if (test=='NP') p = permute.groups(y1, y2, alternative=alt, nreps=nreps)$p.val
 if (p < alpha) count = count + 1 }
-power = count / nreps
+power = count / nsims
 }
 
 if (distribution=="Poisson") {
@@ -124,7 +124,7 @@ x = factor(c(rep(1, n1), rep(2, n2)))
 if (change.type=="M") m2 = m1 + change*m1/100
 if (change.type=="A") m2 = m1 + change
 count = 0
-for (j in 1:nreps) {
+for (j in 1:nsims) {
 y1 = rpois(n1, m1)
 y2 = rpois(n2, m2)
 if (test=='NP') p = permute.groups(y1, y2, alternative=alt, nreps=nreps)$p.val
@@ -135,7 +135,7 @@ dev1 = glm(y ~ x, family=poisson)$dev
 p = (1 - pchisq(dev0-dev1, 1))
 }
 if (p < alpha) count = count + 1 }
-power = count / nreps
+power = count / nsims
 }
 
 if (distribution=="Negbin") {
@@ -146,7 +146,7 @@ if (change.type=="M") m2 = m1 + change*m1/100
 size1 = pars1[2]
 size2 = pars2[1]
 count = 0
-for (j in 1:nreps) {
+for (j in 1:nsims) {
 y1 = rnbinom(n=n1, size=size1, mu=m1)
 y2 = rnbinom(n=n2, size=size2, mu=m2)
 if (test=='NP') p = permute.groups(y1, y2, alternative=alt, nreps=nreps)$p.val
@@ -156,7 +156,7 @@ temp = glm.nb(y ~ x)
 p = anova(temp)[2,5]
 }
 if (p < alpha) count = count + 1 }
-power = count / nreps
+power = count / nsims
 }
 
 if (distribution=="Lognormal") {
@@ -169,13 +169,13 @@ if (change.type=="M") mean2 = mean1 + change*mean1/100
 if (change.type=="A") mean2 = mean1 + change
 mu2 = log(mean2) - (sigma2^2)/2
 count = 0
-for (j in 1:nreps) {
+for (j in 1:nsims) {
 y1 = rlnorm(n1, mu1, sigma1)
 y2 = rlnorm(n2, mu2, sigma2)
 if (test=='NP') p = permute.groups(y1, y2, alternative=alt, nreps=nreps)$p.val
 if (test=='P') p = t.test(log(y1), log(y2), var.equal=varequal, alternative=alt)$p.val
 if (p < alpha) count = count + 1 }
-power = count / nreps
+power = count / nsims
 }
 power
 }
@@ -191,5 +191,4 @@ s2 = mu2^2 * s1 / (s1*(mu1 - mu2) + mu1^2)
 if (s2 <=0 | s2==Inf) stop("No positive, finite solution for size2")
 s2
 }
-
 

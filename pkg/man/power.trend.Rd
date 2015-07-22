@@ -71,13 +71,13 @@ David Maxwell: david.maxwell@cefas.co.uk
          \code{\link[mgcv]{gam}}, \code{\link{generate.trend}}}
 
 \examples{
-library(mgcv)         # Dave had these commented out
+library(mgcv)
 library(Kendall)
 
 par(mfrow=c(2,2))
-lin5 = generate.trend(nyears=10, k=5, type="linear")
+lin5 = generate.trend(nyears=10, change=5, type="linear")
 plot(lin5$i, lin5$mu)
-updown = generate.trend(nyears=15, k=5, type="updown", changeyear=8)
+updown = generate.trend(nyears=15, change=5, type="updown", changeyear=8)
 plot(updown$i, updown$mu)
 
 power.trend(xvalues=lin5$i, meanvalues=lin5$mu, distribution="Normal", sd=2,
