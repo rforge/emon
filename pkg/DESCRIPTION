@@ -2,7 +2,7 @@ Package: emon
 Type: Package
 Title: Tools for environmental and ecological survey design
 Version: 1.0
-Date: 2015-1-08
+Date: 2015-07-23
 Author: Jon Barry and David Maxwell
 Maintainer: Jon Barry <jon.barry@cefas.co.uk>
 Imports:
