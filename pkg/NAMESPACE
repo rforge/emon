@@ -1,3 +1,3 @@
-import(mgcv, Kendall, MASS)
+import(mgcv, MASS)
 exportPattern("^[[:alpha:]]+")
 

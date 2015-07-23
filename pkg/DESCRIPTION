@@ -7,7 +7,6 @@ Author: Jon Barry and David Maxwell
 Maintainer: Jon Barry <jon.barry@cefas.co.uk>
 Imports:
     mgcv,
-    Kendall,
     MASS
 Description: Statistical tools for environmental and ecological surveys.
     Simulation-based power analysis; detection probabilities from different
