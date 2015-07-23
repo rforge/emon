@@ -7,7 +7,7 @@ generate.trend = function(nyears, mu1=0, change, change.type="A", type = c("line
   
   # mean values mu_i for years i=1,...,nyears
   # mu1 is value at year 1. Equivalent to fmin in F&N 1999.
-  # k is difference between mu1 and largest mu_i, can be negative for a decreasing trend
+  # change is difference between mu1 and largest mu_i, can be negative for a decreasing trend
   # type is type of trend: linear, incident (a single peak), step, updown
   # changeyear defines when incident, step or switch from up to down happens
   
@@ -28,7 +28,7 @@ generate.trend = function(nyears, mu1=0, change, change.type="A", type = c("line
   if( !(change.type %in% allowedchange.type) )
     stop(paste("change.type must be one of ", allowedchange.type))
 
-  if (change.type=="M") change = mu1 + mu1*change/100
+  if (change.type=="M") change = mu1*change/100
   
   i = 1:nyears
   
@@ -87,17 +87,11 @@ meanvalues.rep = rep(meanvalues, rep(reps, nyears))
   dat
 }
 
-
 power.trend = function(xvalues, reps=1,  meanvalues, distribution="Normal", sd=NA,
   nbsize=NA, method="linear regression", alpha=0.05, nsims=1000, nsims.mk=999,
   randeffect=F, randeffect.sd=NA){
 #******************************************************************************
 # Power to detect a trend.
-#
-# The MannKendall function from library Kendall works only when there are not
-# repeat X values. This is method="mk1". If there are repeat values then use
-# function mannkendall. This function is slower than MannKendall so MannKendall
-# is probably preferable if there are no repeat X values.
 #
 # Within gam a spline s(xvalues) is used with default settings
 # Currently gam only uses Normal errors, could extend this to match distribution in simulation
@@ -125,10 +119,7 @@ power.trend = function(xvalues, reps=1,  meanvalues, distribution="Normal", sd=N
   if(distribution == "Negbin" & (missing(nbsize) || length(nbsize) == 0L || mode(nbsize) != "numeric"))
     stop("For distribution Negbin, 'nbsize' must be a non-empty numeric vector")
 
-  allowedmethod = c("linear regression", "mk1", "mk2", "gam")
-  
-  if (method=="mk1" & reps > 1.1)
-    stop("Mann-Kendall mk1 works only when reps=1")
+  allowedmethod = c("linear regression", "mk", "gam")
 
   if( !(method %in% allowedmethod) )
     stop(paste("distribution must be one of", allowedmethod))
@@ -145,7 +136,6 @@ if (randeffect & mode(randeffect.sd) != "numeric")
 if(randeffect & randeffect.sd <=0)
      stop("Random effect sd must be positive")
   
-  #if(method == "mk1") require("Kendall")
   #if(method == "gam") require("mgcv")
 
 length.xvalues = length(xvalues)
@@ -162,16 +152,7 @@ xvalues = rep(xvalues, rep(reps,length.xvalues))
     }
   }
   
-  if(method == "mk1"){
-    for(j in 1:nsims){
-      y = addnoise(meanvalues, reps, distribution, sd, nbsize, randeffect, randeffect.sd)
-      y = y[order(xvalues)]
-      smry = MannKendall(y)
-      pvalues[j] = smry$sl[1]
-    }
-  }
-  
-  if(method == "mk2"){
+  if(method == "mk"){
     for(j in 1:nsims){
       y = addnoise(meanvalues, reps, distribution, sd, nbsize, randeffect, randeffect.sd)
       smry = mannkendall(xvalues, y, nsims.mk)

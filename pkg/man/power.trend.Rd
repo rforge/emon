@@ -29,12 +29,8 @@ less than alpha (two-sided test).
 
   \item{nbsize}{ Size parameter if distribution=\code{"Negbin"}.}
 
-  \item{method}{ Method used to identify the trend. Can be one of \code{"linear regression"}, \code{"mk1"},
-       (Mann-Kendall test that
-        uses function MannKendall from library Kendall: does not work if there are repeat \code{xvalues}), 'mk2'
-        (Mann-Kendall
-        test that uses function mannkendall: works for repeat \code{xvalues} but slower than \code{mk1}),
-        \code{"gam"} fits a Generalised
+  \item{method}{ Method used to identify the trend. Can be one of \code{"linear regression"}, \code{"mk"}, or
+        \code{"gam"}. The last of these fits a Generalised
         Additive Model (Wood, 2006) using function \code{\link[mgcv]{gam}}. It assumes Normal errors.}
 
   \item{alpha}{ Type 1 error for detecting trend. Values less than \code{alpha} cause the null hypothesis of
@@ -43,7 +39,7 @@ less than alpha (two-sided test).
   \item{nsims}{ The number of simulations to be used in calculating the power. Default is 1000.}
 
   \item{nsims.mk}{ The number of replicate permutations used in calculating the p-value for the Mann-Kendall test
-                   when \code{method=mk2}. Default is 999.}
+                   when \code{method=mk}. Default is 999.}
   \item{randeffect}{Not working yet}
   \item{randeffect.sd}{Not working yet}
 }
@@ -67,12 +63,11 @@ Wood S.N. (2006) Generalized Additive Models: An Introduction with R. Chapman an
 David Maxwell: david.maxwell@cefas.co.uk
 }
 
-\seealso{\code{\link{mannkendall.stat}}, \code{\link[Kendall]{MannKendall}}, \code{\link{addnoise}},
+\seealso{\code{\link{mannkendall.stat}}, \code{\link{addnoise}},
          \code{\link[mgcv]{gam}}, \code{\link{generate.trend}}}
 
 \examples{
 library(mgcv)
-#library(Kendall)
 
 par(mfrow=c(2,2))
 lin5 = generate.trend(nyears=10, change=5, type="linear")
@@ -82,10 +77,8 @@ plot(updown$i, updown$mu)
 
 power.trend(xvalues=lin5$i, meanvalues=lin5$mu, distribution="Normal", sd=2,
             method="linear regression", alpha=0.05, nsims=500)
-power.trend(xvalues=lin5$i, meanvalues=lin5$mu, distribution="Poisson", method="mk1", alpha=0.05,
+power.trend(xvalues=lin5$i, meanvalues=lin5$mu, distribution="Poisson", method="mk", alpha=0.05,
       nsims=500)
-power.trend(xvalues=lin5$i, meanvalues=lin5$mu, distribution="Negbin", nbsize=2, method="mk2",
-            alpha=0.05, nsims=100, nsims.mk=499)
 power.trend(xvalues=updown$i, meanvalues=updown$mu, distribution="Normal", sd=2,
             method="gam", alpha=0.05, nsims=500)
 }
