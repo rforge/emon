@@ -72,7 +72,7 @@ David Maxwell: david.maxwell@cefas.co.uk
 
 \examples{
 library(mgcv)
-library(Kendall)
+#library(Kendall)
 
 par(mfrow=c(2,2))
 lin5 = generate.trend(nyears=10, change=5, type="linear")
