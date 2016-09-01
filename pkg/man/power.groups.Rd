@@ -20,10 +20,10 @@ Mean of second group minus mean of first group (i.e. \code{mu2-mu1}) or percenta
 Whether the parameter \code{change} represents an additive ("A") or percentage ("M") change.
 }
 \item{n1}{
-Sample size for group 1.
+Vector of sample sizes for group 1. Must be of same dimension as \code{n2}.
 }
 \item{n2}{
-Sample size for group 2.
+Vector of sample sizes for group 2. Must be of same dimension as \code{n1}.
 }
 
 \item{pars1}{
@@ -90,6 +90,9 @@ groups 1 and 2. One possibility is to keep the size the same for both groupss. H
 mean is different between the groups and because the variance V = mu+mu^2/size, this means that V
 will be different for the group 1 and group 2 distributions. If you want to keep the variance the
 same, you can use the function \code{\link{size2.samevar}}.
+
+Several powers can be calculated per call to this function by specifying more than one values for
+the sample sizes \code{n1} and \code{n2}.
 }
 \value{
 The power is returned. This is the proportion of the \code{nreps} simulations that returned
@@ -110,6 +113,9 @@ Jon Barry: Jon.Barry@cefas.co.uk
 library(MASS)
 
 power.groups(change=2.5, change.type="A", n1=20, n2=20, pars1=c(10,2),
+       pars2=2, test='P', distribution="Normal")
+
+power.groups(change=2.5, change.type="A", n1=seq(5,25,5), n2=seq(5,25,5), pars1=c(10,2),
        pars2=2, test='P', distribution="Normal")
 
 power.groups(change=25, change.type="M", n1=20, n2=20, pars1=10,

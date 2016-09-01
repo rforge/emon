@@ -29,12 +29,6 @@ allowedtests = c("P", "NP")
 if( !(test %in% allowedtests) )
       stop("Tests must be of type character and be one of P or NP")
 
-if ( !is.wholenumber(nt) | nt<1.5 )
-      stop("nt must be an integer and at least 2")
-
-if ( !is.wholenumber(nc) | nc<1.5 )
-      stop("nc must be an integer and at least 2")
-
 if (distribution=="Normal") {
     if (length(parst)!=2) stop("parst must be of length 2")
     if (length(parsc)!=2) stop("parsc must be of length 2")
@@ -71,8 +65,21 @@ if (alpha<0 | alpha>1) stop("alpha must lie between 0 and 1")
 if ( !is.wholenumber(nsims) | nsims<0.5 )
       stop("nsims must be a positive integer")
 
-group = factor(c(rep(1,nt), rep(2,nc), rep(1,nt), rep(2,nc)))
-time = factor(c(rep(1,nt), rep(1,nc), rep(2,nt), rep(2,nc)))
+length.nt = length(nt); length.nc = length(nc)
+
+if ( length.nt != length.nc ) stop("nt and nc must be of the same length")
+
+for (j in 1: length.nt) {
+if ( !is.wholenumber(nt[j]) | nt[j]<1.5 )
+      stop("nt must contain positive integers")
+
+if ( !is.wholenumber(nc[j]) | nc[j]<1.5 )
+      stop("nc must contain positive integers greater than 1")
+}
+
+#### END OF ERROR-CHECKING STUFF ####
+
+power = vector("numeric", length.nt)
 
 if (distribution=="Normal") {
 before.treat.mean = parst[1]
@@ -81,12 +88,16 @@ mu.con = parsc[1]; sd.con = parsc[2]
 if (change.type=="M") mu.treat.after = mu.treat + change * mu.treat / 100
 if (change.type=="A") mu.treat.after = mu.treat + change
 
+for (k in 1:length.nt) {
 count = 0
+group = factor(c(rep(1,nt[k]), rep(2,nc[k]), rep(1,nt[k]), rep(2,nc[k])))
+time = factor(c(rep(1,nt[k]), rep(1,nc[k]), rep(2,nt[k]), rep(2,nc[k])))
+
 for (j in 1:nsims) {
-con.before = rnorm(nc, mu.con, sd.con)
-treat.before = rnorm(nt, mu.treat, sd.treat)
-con.after = rnorm(nc, mu.con, sd.con)
-treat.after = rnorm(nt, mu.treat.after, sd.treat)
+con.before = rnorm(nc[k], mu.con, sd.con)
+treat.before = rnorm(nt[k], mu.treat, sd.treat)
+con.after = rnorm(nc[k], mu.con, sd.con)
+treat.after = rnorm(nt[k], mu.treat.after, sd.treat)
 if (test=="P") {
 y = c(treat.before, con.before, treat.after, con.after)
 arse = aov(y ~ group*time)
@@ -96,8 +107,8 @@ if (test=="NP") p = permute.BACI(treat.before, con.before, treat.after,
                     con.after)
 if (p < alpha) count = count + 1
 }
-power = count / nsims
-}
+power[k] = count / nsims
+}}
 
 if (distribution=="Poisson") {
 before.treat.mean = parst[1]
@@ -105,12 +116,16 @@ mu.con = parsc[1]; mu.treat = parst[1]
 if (change.type=="M") mu.treat.after = mu.treat + change * mu.treat / 100
 if (change.type=="A") mu.treat.after = mu.treat + change
 
+for (k in 1:length.nt) {
 count = 0
+group = factor(c(rep(1,nt[k]), rep(2,nc[k]), rep(1,nt[k]), rep(2,nc[k])))
+time = factor(c(rep(1,nt[k]), rep(1,nc[k]), rep(2,nt[k]), rep(2,nc[k])))
+
 for (j in 1:nsims) {
-con.before = rpois(nc, mu.con)
-treat.before = rpois(nt, mu.treat)
-con.after = rpois(nc, mu.con)
-treat.after = rpois(nt, mu.treat.after)
+con.before = rpois(nc[k], mu.con)
+treat.before = rpois(nt[k], mu.treat)
+con.after = rpois(nc[k], mu.con)
+treat.after = rpois(nt[k], mu.treat.after)
 if (test=="P") {
 y = c(treat.before, con.before, treat.after, con.after)
 temp = glm(y ~ group*time, family=poisson)
@@ -120,8 +135,8 @@ if (test=="NP") p = permute.BACI(treat.before, con.before, treat.after,
                     con.after)
 if (p < alpha) count = count + 1
 }
-power = count / nsims
-}
+power[k] = count / nsims
+}}
 
 if (distribution=="Negbin") {
 mu.con = parsc[1]
@@ -132,12 +147,16 @@ size.treat.after = parst[3]
 if (change.type=="M") mu.treat.after = mu.treat + change * mu.treat / 100
 if (change.type=="A") mu.treat.after = mu.treat + change
 
+for (k in 1:length.nt) {
 count = 0
+group = factor(c(rep(1,nt[k]), rep(2,nc[k]), rep(1,nt[k]), rep(2,nc[k])))
+time = factor(c(rep(1,nt[k]), rep(1,nc[k]), rep(2,nt[k]), rep(2,nc[k])))
+
 for (j in 1:nsims) {
-con.before = rnbinom(n=nc, size=size.con, mu=mu.con)
-treat.before = rnbinom(n=nt, size=size.treat, mu=mu.treat)
-con.after = rnbinom(n=nc, size=size.con, mu=mu.con)
-treat.after = rnbinom(n=nt, size=size.treat.after, mu=mu.treat.after)
+con.before = rnbinom(n=nc[k], size=size.con, mu=mu.con)
+treat.before = rnbinom(n=nt[k], size=size.treat, mu=mu.treat)
+con.after = rnbinom(n=nc[k], size=size.con, mu=mu.con)
+treat.after = rnbinom(n=nt[k], size=size.treat.after, mu=mu.treat.after)
 
 if (test=="P") {
 y = c(treat.before, con.before, treat.after, con.after)
@@ -148,8 +167,8 @@ if (test=="NP") p = permute.BACI(treat.before, con.before, treat.after,
                     con.after)
 if (p < alpha) count = count + 1
 }
-power = count / nsims
-}
+power[k] = count / nsims
+}}
 
 if (distribution=="Lognormal") {
 mu.treat = parst[1]; sigma.treat = parst[2]
@@ -161,12 +180,16 @@ if (change.type=="A") mean.treat.after = mean.treat + change
 
 mu.treat.after = log(mean.treat.after) - (sigma.treat^2)/2
 
+for (k in 1:length.nt) {
 count = 0
+group = factor(c(rep(1,nt[k]), rep(2,nc[k]), rep(1,nt[k]), rep(2,nc[k])))
+time = factor(c(rep(1,nt[k]), rep(1,nc[k]), rep(2,nt[k]), rep(2,nc[k])))
+
 for (j in 1:nsims) {
-con.before = rlnorm(nc, mu.con, sigma.con)
-treat.before = rlnorm(nt, mu.treat, sigma.treat)
-con.after = rlnorm(nc, mu.con, sigma.con)
-treat.after = rlnorm(nt, mu.treat.after, sigma.treat)
+con.before = rlnorm(nc[k], mu.con, sigma.con)
+treat.before = rlnorm(nt[k], mu.treat, sigma.treat)
+con.after = rlnorm(nc[k], mu.con, sigma.con)
+treat.after = rlnorm(nt[k], mu.treat.after, sigma.treat)
 if (test=="P") {
 y = log(c(treat.before, con.before, treat.after, con.after))
 temp = aov(y ~ group*time)
@@ -176,8 +199,8 @@ if (test=="NP") p = permute.BACI(treat.before, con.before, treat.after,
                     con.after)
 if (p < alpha) count = count + 1
 }
-power = count / nsims
-}
+power[k] = count / nsims
+}}
 list(power=power)
 }
 
@@ -220,3 +243,6 @@ bigger = sim.diff[abs(sim.diff) >= abs(obs.diff)]
 pvalue = (length(bigger)+1)/(nreps+1)
 list(p.value=pvalue)
 }
+
+
+

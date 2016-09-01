@@ -56,11 +56,17 @@ allowedchange.types = c("A", "M")
 if( !(change.type %in% allowedchange.types) )
       stop("Change.type must be of type character and be one of A or M")
 
-if ( !is.wholenumber(n1) | n1<0.5 )
-      stop("n1 must be a positive integer")
+length.n1 = length(n1); length.n2 = length(n2)
 
-if ( !is.wholenumber(n2) | n2<0.5 )
-      stop("n2 must be a positive integer")
+if ( length.n1 != length.n2 ) stop("n1 and n2 must be of the same length")
+
+for (j in 1: length.n1) {
+if ( !is.wholenumber(n1[j]) | n1[j]<0.5 )
+      stop("n1 must contain positive integers")
+
+if ( !is.wholenumber(n2[j]) | n2[j]<0.5 )
+      stop("n2 must contain positive integers")
+}
 
 if (distribution=="Normal") {
     if (length(pars1)!=2) stop("pars1 must be of length 2")
@@ -102,31 +108,35 @@ if (alpha <= 0 | alpha >= 1) stop("Type 1 error must be between 0 and 1")
 if ( !is.wholenumber(nreps) | nreps<0.5 )
       stop("nreps must be a positive integer")
 
+power = vector("numeric", length.n1)
+
 if (distribution=="Normal") {
 m1 = pars1[1]
 if (change.type=="M") m2 = m1 + change*m1/100
 if (change.type=="A") m2 = m1 + change
 s1 = pars1[2]
 s2 = pars2[1]
+for (k in 1:length.n1) {
 count = 0
 for (j in 1:nsims) {
-y1 = rnorm(n1, m1, s1)
-y2 = rnorm(n2, m2, s2)
+y1 = rnorm(n1[k], m1, s1)
+y2 = rnorm(n2[k], m2, s2)
 if (test=='P') p = t.test(y1, y2, var.equal=varequal, alternative=alt)$p.val
 if (test=='NP') p = permute.groups(y1, y2, alternative=alt, nreps=nreps)$p.val
 if (p < alpha) count = count + 1 }
-power = count / nsims
-}
+power[k] = count / nsims
+}}
 
 if (distribution=="Poisson") {
 m1 = pars1[1]
-x = factor(c(rep(1, n1), rep(2, n2)))
 if (change.type=="M") m2 = m1 + change*m1/100
 if (change.type=="A") m2 = m1 + change
+for (k in 1:length.n1) {
+x = factor(c(rep(1, n1[k]), rep(2, n2[k])))
 count = 0
 for (j in 1:nsims) {
-y1 = rpois(n1, m1)
-y2 = rpois(n2, m2)
+y1 = rpois(n1[k], m1)
+y2 = rpois(n2[k], m2)
 if (test=='NP') p = permute.groups(y1, y2, alternative=alt, nreps=nreps)$p.val
 if (test=='P') {
 y = c(y1, y2)
@@ -135,20 +145,21 @@ dev1 = glm(y ~ x, family=poisson)$dev
 p = (1 - pchisq(dev0-dev1, 1))
 }
 if (p < alpha) count = count + 1 }
-power = count / nsims
-}
+power[k] = count / nsims
+}}
 
 if (distribution=="Negbin") {
 m1 = pars1[1]
-x = factor(c(rep(1, n1), rep(2, n2)))
 if (change.type=="A") m2 = m1 + change
 if (change.type=="M") m2 = m1 + change*m1/100
 size1 = pars1[2]
 size2 = pars2[1]
+for (k in 1:length.n1) {
+x = factor(c(rep(1, n1[k]), rep(2, n2[k])))
 count = 0
 for (j in 1:nsims) {
-y1 = rnbinom(n=n1, size=size1, mu=m1)
-y2 = rnbinom(n=n2, size=size2, mu=m2)
+y1 = rnbinom(n=n1[k], size=size1, mu=m1)
+y2 = rnbinom(n=n2[k], size=size2, mu=m2)
 if (test=='NP') p = permute.groups(y1, y2, alternative=alt, nreps=nreps)$p.val
 if (test=='P') {
 y = c(y1, y2)
@@ -156,8 +167,8 @@ temp = glm.nb(y ~ x)
 p = anova(temp)[2,5]
 }
 if (p < alpha) count = count + 1 }
-power = count / nsims
-}
+power[k] = count / nsims
+}}
 
 if (distribution=="Lognormal") {
 # mu and sigma are on log scale
@@ -168,6 +179,7 @@ mean1 = exp(mu1 + (sigma1^2) / 2)
 if (change.type=="M") mean2 = mean1 + change*mean1/100
 if (change.type=="A") mean2 = mean1 + change
 mu2 = log(mean2) - (sigma2^2)/2
+for (k in 1:length.n1) {
 count = 0
 for (j in 1:nsims) {
 y1 = rlnorm(n1, mu1, sigma1)
@@ -175,8 +187,8 @@ y2 = rlnorm(n2, mu2, sigma2)
 if (test=='NP') p = permute.groups(y1, y2, alternative=alt, nreps=nreps)$p.val
 if (test=='P') p = t.test(log(y1), log(y2), var.equal=varequal, alternative=alt)$p.val
 if (p < alpha) count = count + 1 }
-power = count / nsims
-}
+power[k] = count / nsims
+}}
 power
 }
 

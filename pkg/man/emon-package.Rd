@@ -9,13 +9,17 @@
 \title{Tools for environmental and ecological survey design and analysis}
 
 \description{
-This package gives six tools for designing and analysing ecological and environmental surveys. The tools
+This package gives seven tools for designing and analysing ecological and environmental surveys. The tools
 are mainly
 designed for marine  and benthic ecology applications, but they could easily be adopted for terrestrial
 ecology. Three
 of the tools give statistical power for specific survey designs (\code{\link{power.BACI}},
 \code{\link{power.groups}} and
-\code{\link{power.trend}}). The other three are for more specialised applications. These are: the
+\code{\link{power.trend}}). The fourth tool (\code{\link{precision}}) calculates the sample size needed to achieve
+specified precision
+for estimating the mean of some desired statistic together with the precision obtained for given \code{n}.
+
+The other three tools are for more specialised applications. These are: the
 generalised visual fast
 count estimator for underwater video surveys (\code{\link{GVFCMOM}}); an estimate of the empirical
 semi-variogram for
@@ -27,11 +31,11 @@ spatial sampling designs (\code{\link{detect}}).
   \tabular{ll}{
     Package: \tab emon\cr
     Type: \tab Package\cr
-    Version: \tab 1.0\cr
-    Date: \tab 2015-07-23\cr
+    Version: \tab 1.1\cr
+    Date: \tab 2016-09-01\cr
     License: \tab GPL-3\cr
   }
-The six tools in this package are as follows:
+The seven tools in this package are as follows:
 
 Power for BACI designs (\code{\link{power.BACI}}, \code{\link{generate.trend}}, \code{\link{addnoise}},
           \code{\link{mannkendall}}, \code{\link{mannkendall.stat}}, \code{\link{permute.BACI}}).
@@ -40,6 +44,8 @@ Power for comparing two groups (\code{\link{power.groups}}, \code{\link{permute.
           \code{\link{size2.samevar}}).
 
 Power for detecting trends (\code{\link{power.trend}}, \code{\link{generate.trend}}, \code{\link{addnoise}}).
+
+Precision for estimating a mean (\code{\link{precision}}).
 
 Sample sizes and probabilities for patch detection with different spatial sampling patterns
     (\code{\link{detect}}, \code{\link{fS.detect}}, \code{\link{fT.detect}}).
@@ -70,5 +76,6 @@ data distributions and for a variety of statistical tests that might be used to 
 \keyword{power, ecological surveys, video surveys, spatial correlation, patch detection}
   
 \seealso{ \code{\link{power.BACI}}, \code{\link{power.groups}}, \code{\link{power.trend}},
+          \code{\link{precision}}.
           \code{\link{detect}}, \code{\link{svariog}}, \code{\link{GVFCMOM}}}
 

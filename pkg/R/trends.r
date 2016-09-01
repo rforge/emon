@@ -1,3 +1,9 @@
+
+# function to check for whole numbers, taken from is.integer help file
+is.wholenumber <-
+  function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
+
+
 generate.trend = function(nyears, mu1=0, change, change.type="A", type = c("linear", "incident", "step", "updown"), changeyear, symmetric=F){
   # Generate mean values for different scenarios of change
   # Based on
@@ -78,14 +84,15 @@ nyears = length(meanvalues)
 nobs = nyears * reps
 meanvalues.rep = rep(meanvalues, rep(reps, nyears))
 
-  
-  if(distribution == "Normal")  dat = rnorm(n=nobs, mean = meanvalues.rep, sd = sd)
-  if(distribution == "Poisson")  dat = rpois(n=nobs, lambda = meanvalues.rep)  
-  if(distribution == "Negbin")  dat = rnbinom(n=nobs, mu = meanvalues.rep, size = nbsize)
+if(distribution == "Normal")  dat = rnorm(n=nobs, mean = meanvalues.rep, sd = sd)
+if(distribution == "Poisson")  dat = rpois(n=nobs, lambda = meanvalues.rep)  
+if(distribution == "Negbin")  dat = rnbinom(n=nobs, mu = meanvalues.rep, size = nbsize)
   
 #  if (randeffect==T) dat = dat + rep(rnorm(n=nyears, mean=0, sd=randeffect.sd), rep(reps, nyears))
-  dat
+dat
 }
+
+
 
 power.trend = function(xvalues, reps=1,  meanvalues, distribution="Normal", sd=NA,
   nbsize=NA, method="linear regression", alpha=0.05, nsims=1000, nsims.mk=999,
@@ -124,8 +131,11 @@ power.trend = function(xvalues, reps=1,  meanvalues, distribution="Normal", sd=N
   if( !(method %in% allowedmethod) )
     stop(paste("distribution must be one of", allowedmethod))
 
-  if (!is.wholenumber(reps) | reps < 0.9)
-      stop("Variable 'reps' must be a positive integer")
+  length.reps = length(reps)
+  for (j in 1: length.reps) {
+  if ( !is.wholenumber(reps[j]) | reps[j]<0.5 )
+        stop("reps must contain positive integers")
+}
 
   if (mode(randeffect) != "logical")
       stop("The variable 'randeffect' must be logical - either T or F")
@@ -138,47 +148,58 @@ if(randeffect & randeffect.sd <=0)
   
   #if(method == "gam") require("mgcv")
 
-length.xvalues = length(xvalues)
-xvalues = rep(xvalues, rep(reps,length.xvalues))
+  length.xvalues = length(xvalues)
+  old.xvalues = xvalues
 
   pvalues = numeric(nsims)
+  power = numeric(length.reps)
 
   if(method == "linear regression"){
+    for (k in 1:length.reps) {
+    xvalues = rep(old.xvalues, rep(reps[k],length.xvalues))
     for(j in 1:nsims){
-    y = addnoise(meanvalues, reps, distribution, sd, nbsize, randeffect, randeffect.sd)
+    y = addnoise(meanvalues, reps[k], distribution, sd, nbsize, randeffect,
+      randeffect.sd)
   
     smry = summary(lm(y ~ xvalues))
     pvalues[j] = coef(smry)[2,"Pr(>|t|)"]
     }
+    power[k] = sum(pvalues < alpha) / nsims
+    }
   }
   
+  
   if(method == "mk"){
+    for (k in 1:length.reps) {
+    xvalues = rep(old.xvalues, rep(reps[k],length.xvalues))
     for(j in 1:nsims){
-      y = addnoise(meanvalues, reps, distribution, sd, nbsize, randeffect, randeffect.sd)
+      y = addnoise(meanvalues, reps[k], distribution, sd, nbsize, randeffect, randeffect.sd)
       smry = mannkendall(xvalues, y, nsims.mk)
       pvalues[j] = smry$pval
+    }
+      power[k] = sum(pvalues < alpha) / nsims
     }
   }
 
   if(method == "gam"){
+    for (k in 1:length.reps) {
+    xvalues = rep(old.xvalues, rep(reps[k],length.xvalues))
     for(j in 1:nsims){
-    y = addnoise(meanvalues, reps, distribution, sd, nbsize, randeffect, randeffect.sd)
+    y = addnoise(meanvalues, reps[k], distribution, sd, nbsize, randeffect, randeffect.sd)
       
     smry = summary(gam(y~s(xvalues)))
     pvalues[j] = smry$s.table[1,"p-value"]
+    }
+    # Sometimes "gam" gives NA. Do calculations without them and report number
+    # of NAs
+    ispna = is.na(pvalues)
+    pvalues.notna = pvalues[!ispna]
+    if(sum(ispna)>0) {
+    print(paste("For", sum(ispna), "simulations the model summary gave p-value as NA"))
     }    
+    power[k] = sum(pvalues.notna < alpha) / length(pvalues.notna)
+    }
   }
-  
-  # in a test summary gam gave some NaN values
-#  hist(pvalues, main="p-values", xlim=c(0,1), breaks=seq(0,1,by=0.05)) 
-
-  # if just report number of NaN values and do calculation without them for the minute
-  ispna = is.na(pvalues)
-  pvalues.notna = pvalues[!ispna]
-  if(sum(ispna)>0)print(paste("For", sum(ispna), "simulations the model summary gave p-value as NA"))
-    
-  # power
-  power = sum(pvalues.notna < alpha) / length(pvalues.notna)
   power
 }
 
@@ -201,6 +222,7 @@ stat = stat + npos - nneg
 }
 stat
 }
+
 
 mannkendall = function(time, Y, nsims.mk=999) {
 #****************************************************************************
@@ -244,6 +266,3 @@ pvalue = (bigger+1)/(nsims.mk+1)
 
 list(pvalue=pvalue, mann=observed)
 }
-
-
-

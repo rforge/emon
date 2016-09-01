@@ -18,9 +18,9 @@ less than alpha (two-sided test).
 \arguments{
   \item{xvalues}{Vector of, for example, time points at which the trend is evaluated.}
 
-  \item{reps}{Number of replicates per time point.}
+  \item{reps}{Vector of number of replicates per time point.}
 
-  \item{meanvalues}{Vector of mean values that identift the signal of the trend.}
+  \item{meanvalues}{Vector of mean values that identify the signal of the trend.}
 
   \item{distribution}{ Distribution (must be one of \code{"Normal"}, \code{"Poisson"} or \code{"Negbin"} used to
         generate random values based on the signal in \code{meanvalues}.}
@@ -46,7 +46,9 @@ less than alpha (two-sided test).
 \details{
 The Mann Kendall tests are approriate only for monotonic increasing or decreasing trends, the linear regression
 method is
-only approriate for linearly increasing or decreasing trend. The GAM is appropriate for changing trends over time. 
+only approriate for linearly increasing or decreasing trend. The GAM is appropriate for changing trends over time.
+
+Several powers can be calculated on a single call to this function by placing more than one value in \code{reps}.
 }
 \value{ The power is returned. }
 

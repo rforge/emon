@@ -28,9 +28,13 @@ to detect differences between the control and the treatment.
      percentage ("M") change.
 }
 
-\item{nt}{Sample size for treatment area on both sampling occasions.}
+\item{nt}{Vector of sample sizes for treatment group. Must be of same dimension as \code{nc}.
+}
 
-\item{nc}{Sample size for control area on both sampling occasions.}
+
+\item{nc}{Vector of sample sizes for control group. Must be of same dimension as \code{nt}.
+}
+
 
 \item{parst}{
     Parameters for the treatment data.
@@ -114,6 +118,9 @@ AFTER treatment distribution. One possibility is to keep the size the same for b
 distributions. However, because the mean changes and because the variance V = mu+mu^2/size, this means that V
 will be different for the BEFORE and AFTER distributions. If you want to keep the variance the same, you can use
 the function \code{\link{size2.samevar}}.
+
+Several powers can be calculated per call to this function by specifying more than one values for
+the sample sizes \code{nt} and \code{nc}.
 }
 \value{
   \item{power}{ The estimated power for the design. }
@@ -159,15 +166,13 @@ parsc.abun = parst.abun
 power.rich = rep(0, length(ssize))
 power.abun = rep(0, length(ssize))
 
-for (k in 1:length(ssize)) {
-power.rich[k] = power.BACI(change=35, change.type="M", nt=ssize[k], nc=ssize[k],
+power.rich = power.BACI(change=35, change.type="M", nt=ssize, nc=ssize,
                 parst=parst.rich, parsc=parsc.rich,
                 distribution="Poisson", test="P", nsims=500)$power
 
-power.abun[k] = power.BACI(change=35, change.type="M", nt=ssize[k], nc=ssize[k],
+power.abun = power.BACI(change=35, change.type="M", nt=ssize, nc=ssize,
                 parst=parst.abun, parsc=parsc.abun, distribution="Lognormal",
                 test="P", nsims=500)$power
-}
 
 par(mfrow=c(1,1))
 plot(ssize, power.rich, ylim=c(0,1), ylab="Power", xlab="Sample size", type="l")

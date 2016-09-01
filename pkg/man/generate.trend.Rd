@@ -36,7 +36,8 @@ and then the slope continues as -b).
 Generates a data frame where the first column ($i) is year and the second column ($mu) is the mean value.
 }
 \references{
-Fryer RJ & Nicholson MD (1993) Need paper title. ICES Journal of Marine Science, 50, 161-168.
+Fryer RJ & Nicholson MD (1993) The power of a contaminant monitoring programme to detect linear trends and
+incidents. ICES Journal of Marine Science, 50, 161-168.
 
 Fryer & Nicholson 1999 Using smoothers for comprehensive assessments of contaminant time series in marine biota.
 ICES Journal of Marine Science, 56, 779-790.
