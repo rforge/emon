@@ -1,14 +1,14 @@
 Package: emon
 Type: Package
-Title: Tools for environmental and ecological survey design
-Version: 1.1
-Date: 2016-09-01
+Title: Tools for Environmental and Ecological Survey Design
+Version: 1.2
+Date: 2016-09-14
 Author: Jon Barry and David Maxwell
 Maintainer: Jon Barry <jon.barry@cefas.co.uk>
 Imports:
     mgcv,
     MASS
 Description: Statistical tools for environmental and ecological surveys.
-    Simulation-based power analysis; detection probabilities from different
-    survey designs; visual fast count estimation.
+    Simulation-based power and precision analysis; detection probabilities from
+    different survey designs; visual fast count estimation.
 License: GPL-3

@@ -1,3 +1,5 @@
 import(mgcv, MASS)
 exportPattern("^[[:alpha:]]+")
-
+importFrom("stats", "anova", "aov", "coef", "glm", "lm", "median",
+             "optimize", "pchisq", "poisson", "qt", "rlnorm", "rnbinom",
+             "rnorm", "rpois", "t.test")

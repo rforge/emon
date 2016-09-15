@@ -26,14 +26,12 @@ GVFC(counts, s, d)
 \value{The raw VFC estimate of the segment mean}
 
 \references{
-Barry J and Coggan R (2010) The Visual Fast Count method: a critical examination and development for
-underwater video sampling. Aquatic Biology, 11, 101-112.
+Barry J, Eggleton J, Ware S and Curtis M (2015) Generalizing Visual Fast Count Estimators for Underwater
+Video Surveys. Ecosphere. 
+http://www.esajournals.org/doi/full/10.1890/ES15-00093.1
 }
 \author{
 Jon Barry: jon.barry@cefas.co.uk
-}
-\note{
-The reference given assumes a value of d=1
 }
 
 \seealso{\code{\link{GVFCMOM}} }

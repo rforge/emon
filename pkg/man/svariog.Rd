@@ -34,7 +34,7 @@ Calculates empirical semi-variogram cloud plus classical, robust and median esti
 \value{
 \item{classical}{Classical semi-variogram estimator.}
 
-\item{median}{Median semi-variogram estimator.}
+\item{med}{Median semi-variogram estimator.}
 
 \item{robust}{Robust semi-variogram estimator.}
 

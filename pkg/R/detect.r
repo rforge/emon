@@ -197,3 +197,76 @@ list(prob = pdetect, ssize = ssize, rad = radius, sep = distance)
 }
 
 
+detect.prop = function(statistic, theta=NA, pdetect=NA, ssize=NA) {
+  #*****************************************************************************
+  # Written by JB 1/9/16
+  # Calculates probability of detection of a randomly distributed species
+  #
+  # Statistic = 'P' (probability detection)
+  #           = 'N' (sample size)
+  #           = 'F' (feature proportion)
+  #
+  # Output    $prob  = probability feature detected
+  #           $ssize = sample size
+  #           $prop   = feature proportion
+  #****************************************************************************
+  #***********************************************
+  # Error Checks on parameters
+  #***********************************************
+  allowedstatistics = c("P", "N", "F")
+  if( !(statistic %in% allowedstatistics) )
+    stop("Statistic must be of type character and one of P, N or F")
+  
+  #************************************************************************
+  # Check that sufficient parameters have been input
+  #************************************************************************
+  if (statistic=="P") {
+    if (is.na(theta)==T | is.na(ssize)==T) {
+      stop("theta and ssize arguments needed")
+    }}
+  
+  if (statistic=="N") {
+    if (is.na(theta)==T | is.na(pdetect)==T) {
+      stop("theta and pdetect arguments needed")
+    }}
+  
+  if (statistic=="F") {
+    if (is.na(ssize)==T | is.na(pdetect)==T) {
+      stop("ssize and pdetect arguments needed")
+    }}
+  
+  #************************************************************************
+  
+  if (statistic != "N") {
+    if ( !is.wholenumber(ssize) | ssize<0.5 )
+      stop("Sample size must be a positive integer")
+  }
+  
+  if (statistic != "F") { 
+    if (theta <=0 | theta >=1)
+      stop("theta must be greater than 0 and less than 1")
+  }
+  
+  if (statistic != "P") {
+    if (pdetect <=0 | pdetect >=1)
+      stop("pdetect must be greater than 0 and less than 1")
+  }
+  
+  #**************************
+  # Do the calculations
+  #**************************
+  if (statistic == 'P') {
+    pdetect = 1 - (1 - theta)^ssize
+  }
+  if (statistic == 'N') {
+    ssize = log(1-pdetect) / log(1-theta)
+  }
+  if (statistic == 'F') {
+    theta = 1 - (1-pdetect)^(1/ssize)
+  }
+  
+  list(prob = pdetect, ssize = ssize, prop = theta)
+}
+
+
+

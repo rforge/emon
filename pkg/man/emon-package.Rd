@@ -23,16 +23,16 @@ The other three tools are for more specialised applications. These are: the
 generalised visual fast
 count estimator for underwater video surveys (\code{\link{GVFCMOM}}); an estimate of the empirical
 semi-variogram for
-examining spatial correlation between stations (\code{\link{svariog}}); and the patch detection
+examining spatial correlation between stations (\code{\link{svariog}}); and detection
 probability for three
-spatial sampling designs (\code{\link{detect}}).
+spatial sampling designs (\code{\link{detect}} and \code{\link{detect.prop}}).
 }
 \details{
   \tabular{ll}{
     Package: \tab emon\cr
     Type: \tab Package\cr
-    Version: \tab 1.1\cr
-    Date: \tab 2016-09-01\cr
+    Version: \tab 1.2\cr
+    Date: \tab 2016-09-14\cr
     License: \tab GPL-3\cr
   }
 The seven tools in this package are as follows:

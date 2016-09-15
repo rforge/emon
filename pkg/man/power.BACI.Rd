@@ -145,7 +145,7 @@ Jon Barry (email Jon.Barry@cefas.co.uk)
 \examples{
 
 # Data is richness (number of species) and abundance from grab samples from
-# the Dogger Bank, UK.
+# the Dogger Bank, UK. In practice, \code{nsims} would be set to at least 1000.
 
 rich = c(15,16,37,12,15,5,13,16,17,34,23,20,22,30,85,55,13,19,30,41,22,8,43,10,38,24,17,
          23,17,17,24,33,30,18,26,18,12,50,19,21,35)
@@ -168,11 +168,11 @@ power.abun = rep(0, length(ssize))
 
 power.rich = power.BACI(change=35, change.type="M", nt=ssize, nc=ssize,
                 parst=parst.rich, parsc=parsc.rich,
-                distribution="Poisson", test="P", nsims=500)$power
+                distribution="Poisson", test="P", nsims=50)$power
 
 power.abun = power.BACI(change=35, change.type="M", nt=ssize, nc=ssize,
                 parst=parst.abun, parsc=parsc.abun, distribution="Lognormal",
-                test="P", nsims=500)$power
+                test="P", nsims=50)$power
 
 par(mfrow=c(1,1))
 plot(ssize, power.rich, ylim=c(0,1), ylab="Power", xlab="Sample size", type="l")
