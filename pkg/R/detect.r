@@ -200,7 +200,8 @@ list(prob = pdetect, ssize = ssize, rad = radius, sep = distance)
 detect.prop = function(statistic, theta=NA, pdetect=NA, ssize=NA) {
   #*****************************************************************************
   # Written by JB 1/9/16
-  # Calculates probability of detection of a randomly distributed species
+  # Calculates probability of detection of feature covering an area theta
+  # of the survey area. Works for vectors.
   #
   # Statistic = 'P' (probability detection)
   #           = 'N' (sample size)
@@ -220,37 +221,62 @@ detect.prop = function(statistic, theta=NA, pdetect=NA, ssize=NA) {
   #************************************************************************
   # Check that sufficient parameters have been input
   #************************************************************************
-  if (statistic=="P") {
-    if (is.na(theta)==T | is.na(ssize)==T) {
-      stop("theta and ssize arguments needed")
-    }}
+  #if (statistic=="P") {
+  #  if (is.na(theta)==T | is.na(ssize)==T) {
+  #    stop("theta and ssize arguments needed")
+  #  }}
   
-  if (statistic=="N") {
-    if (is.na(theta)==T | is.na(pdetect)==T) {
-      stop("theta and pdetect arguments needed")
-    }}
+  # if (statistic=="N") {
+  #  if (is.na(theta)==T | is.na(pdetect)==T) {
+  #    stop("theta and pdetect arguments needed")
+  #  }}
   
-  if (statistic=="F") {
-    if (is.na(ssize)==T | is.na(pdetect)==T) {
-      stop("ssize and pdetect arguments needed")
-    }}
+  #if (statistic=="F") {
+  #  if (is.na(ssize)==T | is.na(pdetect)==T) {
+  #    stop("ssize and pdetect arguments needed")
+  #  }}
   
   #************************************************************************
   
-  if (statistic != "N") {
-    if ( !is.wholenumber(ssize) | ssize<0.5 )
-      stop("Sample size must be a positive integer")
+  if (statistic == "N") {
+    for (j in 1:length(pdetect)) {
+      if ( pdetect[j] <=0 | pdetect[j] >=1)
+        stop("pdetect must be greater than 0 and less than 1")
+    }
+    for (j in 1:length(theta)) {
+      if ( theta[j] <=0 | theta[j] >=1)
+        stop("theta must be greater than 0 and less than 1")
+    }
+    if (length(pdetect) != length(theta))
+      stop("pdetect and theta must be of the same length")
   }
   
-  if (statistic != "F") { 
-    if (theta <=0 | theta >=1)
-      stop("theta must be greater than 0 and less than 1")
+  if (statistic == "F") {
+    for (j in 1:length(pdetect)) {
+      if ( pdetect[j] <=0 | pdetect[j] >=1)
+        stop("pdetect must be greater than 0 and less than 1")
+    }
+    for (j in 1:length(ssize)) {
+      if ( !is.wholenumber(ssize[j]) | ssize[j]<0.5 )
+        stop("ssize must be a positive integer")
+    }
+    if (length(pdetect) != length(ssize))
+      stop("pdetect and ssize must be of the same length")
   }
   
-  if (statistic != "P") {
-    if (pdetect <=0 | pdetect >=1)
-      stop("pdetect must be greater than 0 and less than 1")
+  if (statistic == "P") {
+    for (j in 1:length(ssize)) {
+      if ( !is.wholenumber(ssize[j]) | ssize[j]<0.5 )
+        stop("ssize must be a positive integer")
+    }
+    for (j in 1:length(theta)) {
+      if ( theta[j] <=0 | theta[j] >=1)
+        stop("theta must be greater than 0 and less than 1")
+    }
+    if (length(ssize) != length(theta))
+      stop("ssize and theta must be of the same length")
   }
+  
   
   #**************************
   # Do the calculations
@@ -267,6 +293,5 @@ detect.prop = function(statistic, theta=NA, pdetect=NA, ssize=NA) {
   
   list(prob = pdetect, ssize = ssize, prop = theta)
 }
-
 
 
