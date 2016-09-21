@@ -32,7 +32,7 @@ spatial sampling designs (\code{\link{detect}} and \code{\link{detect.prop}}).
     Package: \tab emon\cr
     Type: \tab Package\cr
     Version: \tab 1.3\cr
-    Date: \tab 2016-09-20\cr
+    Date: \tab 2016-09-21\cr
     License: \tab GPL-3\cr
   }
 The seven tools in this package are as follows:
@@ -48,7 +48,7 @@ Power for detecting trends (\code{\link{power.trend}}, \code{\link{generate.tren
 Precision for estimating a mean (\code{\link{precision}}).
 
 Sample sizes and probabilities for patch detection with different spatial sampling patterns
-    (\code{\link{detect}}, \code{\link{fS.detect}}, \code{\link{fT.detect}}).
+    (\code{\link{detect}}, \code{\link{detect.prop}}, \code{\link{fS.detect}}, \code{\link{fT.detect}}).
 
 Semi-variogram function for investigating spatial dependency (\code{\link{svariog}}).
 
