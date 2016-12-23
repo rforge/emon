@@ -5,8 +5,8 @@ Does non-parametric randomisation test for the interaction term in a BACI design
 }
 \description{
 We have control and treatment data from time 1 in a BACI design, plus control and treatment
-data from time 2. The interaction  the amount that the difference in the control and
-treatment meansis different between times 1 and 2.
+data from time 2. The interaction is the amount that the difference in the control and
+treatment means is different between times 1 and 2.
 }
 \usage{
 permute.BACI(t1, c1, t2, c2, nreps=999)
@@ -21,20 +21,20 @@ permute.BACI(t1, c1, t2, c2, nreps=999)
 }
 
 \details{
-The test statistic used to define the interaction is T=[mean(t1)-mean(c1)]-[mean(t2)-mean(c2)].
-We assume a null hypothesis of a zero interaction. For a zero interaction to occur, we need
-mean(t1)-mean(c1) = mean(t2)-mean(c2). Thus, the appropriate permutation is to permute the time
-labels for the control observations and, similarly, to permute the time labels for the treatment
-observations. This creates a null distribution for the interaction (using sample means to calculate
-T).
- 
+There are several permutations that can be used to generate the null distribution for
+the interaction (see Manly, 2006 and Anderson and Ter Braak, 2003). The method used here is
+to do a complete randomisation of the raw data.
+
 The p-value is calculated as suggested by Manly (2006).
 }
 
 \value{The p-value is returned as \code{$p.value}}
 
 \references{
-Manly BFJ (2006) Randomization, Bootstrap And Monte Carlo Methods in Biology: 3rd edition. Chapman and Hall.}
+Manly BFJ (2006) Randomization, Bootstrap And Monte Carlo Methods in Biology: 3rd edition. Chapman and Hall.
+
+Anderson, M.J. and Ter Braak, C.J.F. (2003). Permutation tests for multi-factorial analysis of
+variance. Journal of Computation and Simulation, 73, 85-113.}
 
 \author{
 Jon Barry: Jon.Barry@cefas.co.uk
@@ -42,8 +42,6 @@ Jon Barry: Jon.Barry@cefas.co.uk
 \seealso{\code{\link{power.BACI}}, \code{\link{permute.groups}}}
 
 \examples{
-set.seed(5)
-v1 = rnorm(27,10,2); v2=rnorm(25,11,2)
 }
 \keyword{permutation test}
 
