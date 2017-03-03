@@ -182,8 +182,8 @@ mu2 = log(mean2) - (sigma2^2)/2
 for (k in 1:length.n1) {
 count = 0
 for (j in 1:nsims) {
-y1 = rlnorm(n1, mu1, sigma1)
-y2 = rlnorm(n2, mu2, sigma2)
+y1 = rlnorm(n1[k], mu1, sigma1)
+y2 = rlnorm(n2[k], mu2, sigma2)
 if (test=='NP') p = permute.groups(y1, y2, alternative=alt, nreps=nreps)$p.val
 if (test=='P') p = t.test(log(y1), log(y2), var.equal=varequal, alternative=alt)$p.val
 if (p < alpha) count = count + 1 }

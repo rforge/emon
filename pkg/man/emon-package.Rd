@@ -31,8 +31,8 @@ spatial sampling designs (\code{\link{detect}} and \code{\link{detect.prop}}).
   \tabular{ll}{
     Package: \tab emon\cr
     Type: \tab Package\cr
-    Version: \tab 1.3\cr
-    Date: \tab 2016-09-21\cr
+    Version: \tab 1.3.2\cr
+    Date: \tab 2017-03-03\cr
     License: \tab GPL-3\cr
   }
 The seven tools in this package are as follows:
