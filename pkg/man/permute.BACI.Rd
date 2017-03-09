@@ -5,8 +5,8 @@ Does non-parametric randomisation test for the interaction term in a BACI design
 }
 \description{
 We have control and treatment data from time 1 in a BACI design, plus control and treatment
-data from time 2. The interaction is the amount that the difference in the control and
-treatment means is different between times 1 and 2.
+data from time 2. The interaction  the amount that the difference in the control and
+treatment meansis different between times 1 and 2.
 }
 \usage{
 permute.BACI(t1, c1, t2, c2, nreps=999)
@@ -21,8 +21,8 @@ permute.BACI(t1, c1, t2, c2, nreps=999)
 }
 
 \details{
-There are several permutations that can be used to generate the null distribution for
-the interaction (see Manly, 2006 and Anderson and Ter Braak, 2003). The method used here is
+There are several permutation that can be used to generate the null distribution for
+the interaction (see Manly, 2006 and Anderson and Terr Braak, 2003). The method used here is
 to do a complete randomisation of the raw data.
 
 The p-value is calculated as suggested by Manly (2006).
@@ -41,7 +41,6 @@ Jon Barry: Jon.Barry@cefas.co.uk
 }
 \seealso{\code{\link{power.BACI}}, \code{\link{permute.groups}}}
 
-\examples{
-}
+
 \keyword{permutation test}
 
